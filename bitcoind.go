@@ -693,3 +693,14 @@ func (b *Bitcoind) SignRawTransaction(tx string) (SRT SignRawTX, err error) {
 	err = json.Unmarshal(r.Result, &SRT)
 	return
 }
+
+//SendRawTransaction sends the raw transaction
+func (b *Bitcoind) SendRawTransaction(tx string) (SRT SignRawTX, err error) {
+	r, err := b.client.call("sendrawtransaction", []interface{}{tx})
+	if err = handleError(err, &r); err != nil {
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &SRT)
+	return
+}
