@@ -665,3 +665,31 @@ func (b *Bitcoind) WalletPassphraseChange(oldPassphrase, newPassprhase string) e
 	r, err := b.client.call("walletpassphrasechange", []interface{}{oldPassphrase, newPassprhase})
 	return handleError(err, &r)
 }
+
+//CreateRawTransaction creates raw transaction for Tx
+func (b *Bitcoind) CreateRawTransaction(tx string) (hexstring string, err error) {
+	r, err := b.client.call("createrawtransaction", []interface{}{tx})
+	if err = handleError(err, &r); err != nil {
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &hexstring)
+	return
+
+}
+
+type SignRawTX struct {
+	Hex       string `json:"Hex"`
+	Completed bool   `json:"Completed"`
+}
+
+//SignRawTransaction signes the hexstring created by CreateRawTransaction
+func (b *Bitcoind) SignRawTransaction(tx string) (SRT SignRawTX, err error) {
+	r, err := b.client.call("signrawtransaction", []interface{}{tx})
+	if err = handleError(err, &r); err != nil {
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &SRT)
+	return
+}
