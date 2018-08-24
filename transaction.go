@@ -70,6 +70,7 @@ type Transaction struct {
 	TimeReceived    int64                `json:"timereceived"`
 	Details         []TransactionDetails `json:"details,omitempty"`
 	Hex             string               `json:"hex,omitempty"`
+	Vout            int                  `json:"vout,omitempty"`
 }
 
 // UTransactionOut represents a unspent transaction out (UTXO)
