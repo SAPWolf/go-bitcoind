@@ -673,8 +673,8 @@ type input struct {
 
 type Inputs []input
 
-//CreateRawTransaction creates raw transaction for Tx
-func (b *Bitcoind) CreateRawTransaction(tx string, vout int, tx2 string) (hexstring string, err error) {
+//CreateRawTransactionJson creates raw transaction for Tx
+func (b *Bitcoind) CreateRawTransactionJson(tx string, vout int, tx2 string) (hexstring string, err error) {
 
 	txJson := Inputs{
 		input{tx, vout},
@@ -684,6 +684,21 @@ func (b *Bitcoind) CreateRawTransaction(tx string, vout int, tx2 string) (hexstr
 	fmt.Printf("%+v\n", string(theJson))
 
 	r, err := b.client.call("createrawtransaction", []interface{}{theJson, tx2})
+
+	fmt.Println(r)
+	if err = handleError(err, &r); err != nil {
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &hexstring)
+	return
+
+}
+
+//CreateRawTransactionString creates raw transaction for Tx
+func (b *Bitcoind) CreateRawTransactionString(tx string, tx2 string) (hexstring string, err error) {
+
+	r, err := b.client.call("createrawtransaction", []interface{}{tx, tx2})
 
 	fmt.Println(r)
 	if err = handleError(err, &r); err != nil {
