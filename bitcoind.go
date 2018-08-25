@@ -673,15 +673,13 @@ type input struct {
 
 type Inputs []input
 
-//CreateRawTransaction creates raw transaction for Tx
-func (b *Bitcoind) CreateRawTransaction(tx string, vout int, tx2 string) (hexstring string, err error) {
+//CreateRawTransactionJSON creates raw transaction for Tx
+func (b *Bitcoind) CreateRawTransactionJSON(tx string, vout int, tx2 string) (hexstring string, err error) {
 
 	txJson := Inputs{
 		input{tx, vout},
 	}
 	theJson, _ := json.Marshal(txJson)
-
-	fmt.Printf("%+v\n", string(theJson))
 
 	r, err := b.client.call("createrawtransaction", []interface{}{theJson, tx2})
 
@@ -700,6 +698,21 @@ type SignRawTX struct {
 	Complete bool   `json:"Complete"`
 }
 
+//CreateRawTransactionString creates raw transaction for Tx
+func (b *Bitcoind) CreateRawTransactionString(tx, tx2 string) (hexstring string, err error) {
+
+	fmt.Println(tx, tx2)
+	fmt.Println()
+	r, err := b.client.call("createrawtransaction", []interface{}{tx, tx2})
+
+	if err = handleError(err, &r); err != nil {
+		return
+	}
+	fmt.Println(json.Unmarshal(r.Result, &hexstring))
+	return
+
+}
+
 //SignRawTransaction signes the hexstring created by CreateRawTransaction
 func (b *Bitcoind) SignRawTransaction(tx string) (SRT SignRawTX, err error) {
 	r, err := b.client.call("signrawtransaction", []interface{}{tx})
@@ -713,7 +726,7 @@ func (b *Bitcoind) SignRawTransaction(tx string) (SRT SignRawTX, err error) {
 }
 
 //SendRawTransaction sends the raw transaction
-func (b *Bitcoind) SendRawTransaction(tx string) (SRT SignRawTX, err error) {
+func (b *Bitcoind) SendRawTransaction(tx string) (SRT string, err error) {
 	r, err := b.client.call("sendrawtransaction", []interface{}{tx})
 	if err = handleError(err, &r); err != nil {
 		return
