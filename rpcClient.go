@@ -109,7 +109,7 @@ func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err
 	defer resp.Body.Close()
 
 	data, err := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(data))
+
 	if err != nil {
 		return
 	}

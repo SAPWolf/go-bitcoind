@@ -683,7 +683,7 @@ func (b *Bitcoind) CreateRawTransactionJSON(tx string, vout int, tx2 string) (he
 
 	r, err := b.client.call("createrawtransaction", []interface{}{theJson, tx2})
 
-	fmt.Println(r)
+	//fmt.Println(r)
 	if err = handleError(err, &r); err != nil {
 		return
 	}
